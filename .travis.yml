@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.7"
+install:
+  - apk update && apk add --no-cache --virtual .build-deps git make build-base postgresql-dev libffi-dev
+  - make setup-dev
+script:
+  - make code-convention
+  - make test
