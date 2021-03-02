@@ -1,9 +1,34 @@
 language: python
 python:
   - "3.7"
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y git make gcc curl unzip zip
+  - curl https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip --output terraform.zip
+  - unzip terraform.zip
+  - sudo mv terraform /usr/local/bin
 install:
-  - apk update && apk add --no-cache --virtual .build-deps git make build-base postgresql-dev libffi-dev
   - make setup-dev
-script:
-  - make code-convention
-  - make test
+
+jobs:
+  include:
+    - stage: Test
+      script:
+      - make code-convention
+      - make test
+    - stage: Test
+      script:
+        - cd infrastructure
+        - terraform init
+        - terraform plan
+    - stage: Deploy
+      script:
+      - cd infrastructure
+      - terraform init
+      - terraform workspace select dev
+      - terraform apply --auto-approve
+      on:
+        branch: main
+
+
+
