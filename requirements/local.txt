@@ -1,0 +1,12 @@
+-r base.txt
+
+boto3
+commitizen==1.5.1
+flake8
+pytest==5.3.5
+pytest-cov
+pytest-mock
+pytest-sugar
+pytest-xdist
+requests-mock
+freezegun

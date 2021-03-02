@@ -1,0 +1,33 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "${api_name}"
+basePath: "/api/v1"
+schemes:
+- "https"
+paths:
+  /address:
+    get:
+      summary: "Get a list of addresses that matches some search text"
+      description: ""
+      parameters:
+        - in: query
+          name: search_text
+          description: The search text that will be used to look for addresses
+          required: true
+          type: string
+      produces:
+      - "application/json"
+      security: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: ""
+        403:
+          description: "No permission"
+      x-amazon-apigateway-integration:
+        uri: arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_endpoint_arn}/invocations
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
