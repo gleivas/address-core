@@ -10,6 +10,9 @@ LOGGER.setLevel(getattr(logging, os.environ.get('log_level', 'INFO')))
 
 
 def lambda_handler(func):
+    """
+    Creates handler in caller's module
+    """
     module = func.__module__
     handler_name = f'{func.__name__}Handler'
     setattr(sys.modules[module], handler_name, func())
@@ -26,7 +29,7 @@ class HttpMethods(Enum):
 
 class Event:
     """
-    Aws ApiGateway event
+    AWS ApiGateway event
     """
     def __init__(self, event):
         self.resource = event['resource']
@@ -70,6 +73,9 @@ class AbstractApi:
 
     @staticmethod
     def format_response(status_code, body=None, headers=None):
+        """
+        Format response to the one expected from AWS
+        """
         return {
             'isBase64Encoded': False,
             'statusCode': status_code,

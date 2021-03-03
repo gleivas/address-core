@@ -28,7 +28,7 @@ module "address_endpoint" {
   source         = "./lambda"
   service        = local.service
   function_name  = "address_endpoint"
-  lambda_handler = "address_core.endpoints.AddressEndpointHandler"
+  lambda_handler = "address_core.endpoints.AddressApiHandler"
   source_files   = ["address_core"]
   requirements   = "requirements/base.txt"
   env_vars = {
