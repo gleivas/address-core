@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 import requests_mock
@@ -27,28 +27,7 @@ def precisely_api_service(mocker):
         return PreciselyApiService(mocker.MagicMock())
 
 
-def test_should_refresh_token_when_initialize(mocker):
-    # GIVEN
-    # WHEN
-    with requests_mock.Mocker() as mock:
-        mock.post(
-            OAUTH_URL,
-            json={
-                "access_token": "{YOUR ACCESS TOKEN}",
-                "tokenType": "BearerToken",
-                "issuedAt": "1429188455329",
-                "expiresIn": "35999",
-                "clientID": "{YOUR API KEY}",
-                "org": "api.precisely.com"
-            }
-        )
-        service = PreciselyApiService(mocker.MagicMock())
-
-    # THEN
-    assert service._session.headers.get('Authorization')
-
-
-def test_should_refresh_token_when_expired(mocker, precisely_api_service):
+def test_should_refresh_token_when_expired(precisely_api_service):
     # GIVEN
     begin_expires_in = datetime.now()
     precisely_api_service._expires_in = begin_expires_in
@@ -78,6 +57,7 @@ def test_should_refresh_token_when_expired(mocker, precisely_api_service):
 
 def test_should_get_locations_formatted_with_apartments(precisely_api_service):
     # GIVEN
+    precisely_api_service._expires_in = datetime.now() + timedelta(seconds=599)
     formatted_address = '1618 Park Ave, Abilene, TX 79603'
     expected_api_response = {
         'location': [

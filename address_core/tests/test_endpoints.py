@@ -1,6 +1,8 @@
 import pytest
+from mock import patch
 
-from address_core.endpoints import AddressEndpoint
+with patch('boto3.client') as mock_method:
+    from address_core.endpoints import AddressEndpoint
 
 
 class RequestBuilder:
