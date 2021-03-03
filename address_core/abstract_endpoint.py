@@ -25,6 +25,9 @@ class HttpMethods(Enum):
 
 
 class Event:
+    """
+    Aws ApiGateway event
+    """
     def __init__(self, event):
         self.resource = event['resource']
         self.path = event['path']
@@ -36,16 +39,20 @@ class Event:
 
 class AbstractApi:
     def __init__(self):
-        self.actions = {}
+        self.endpoints = {}
         self.event = None
 
     def __call__(self, event, context):
         return self.process_event(event, context)
 
     def process_event(self, event, context):
+        """
+        Receives event from AWS and looks in the self endpoints if there is a method registered
+        with the event HTTP method and path
+        """
         try:
             self.event = Event(event)
-            action = self.actions.get((self.event.method, self.event.resource))
+            action = self.endpoints.get((self.event.method, self.event.resource))
             if not action:
                 message = f'Method {self.event.method} is not allowed on {self.event.resource}'
                 return self.format_response(HTTPStatus.METHOD_NOT_ALLOWED, {'message': message})
@@ -55,8 +62,11 @@ class AbstractApi:
             message = 'Internal Server Error'
             return self.format_response(HTTPStatus.INTERNAL_SERVER_ERROR, {'message': message})
 
-    def register_action(self, http_method, path, action):
-        self.actions[(http_method, path)] = action
+    def register_endpoint(self, http_method, path, action):
+        """
+        Register an endpoint with its associate action
+        """
+        self.endpoints[(http_method, path)] = action
 
     @staticmethod
     def format_response(status_code, body=None, headers=None):

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pytest
 import requests_mock
 
-from address_core.services import PreciselyApiService
+from address_core.services import PreciselyApiService, PreciselyApiServiceError
 
 BASE_URL = 'https://api.precisely.com'
 TYPEHEAD_URL = f'{BASE_URL}/typeahead/v1/locations'
@@ -97,3 +97,41 @@ def test_should_get_locations_formatted_with_apartments(precisely_api_service):
     # THEN
     assert len(response) == 3
     assert response[0] == formatted_address
+
+
+def test_should_raise_precisely_api_server_error_when_exception_refreshing_token(precisely_api_service):
+    # GIVEN
+    # WHEN
+    with requests_mock.Mocker() as mock:
+        mock.get(
+            OAUTH_URL, status_code=500
+        )
+        with pytest.raises(PreciselyApiServiceError) as exc_info:
+            precisely_api_service._refresh_token()
+
+    # THEN
+    assert exc_info
+
+
+def test_should_raise_precisely_api_server_error_when_exception_get(precisely_api_service):
+    # GIVEN
+    # WHEN
+    with requests_mock.Mocker() as mock:
+        mock.get(
+            f'{BASE_URL}/test', status_code=500
+        )
+        with pytest.raises(PreciselyApiServiceError) as exc_info:
+            precisely_api_service._get('test', {})
+
+    # THEN
+    assert exc_info
+
+
+def test_should_raise_precisely_api_server_error_when_exception_formatting_addresses(precisely_api_service):
+    # GIVEN
+    # WHEN
+    with pytest.raises(PreciselyApiServiceError) as exc_info:
+        precisely_api_service._format_addresses({'location': 'None'})
+
+    # THEN
+    assert exc_info
