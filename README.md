@@ -1,14 +1,14 @@
 [![Build Status](https://travis-ci.com/gleivas/address-core.svg?token=EM4s1WqR5gqsAUmT7awt&branch=main)](https://travis-ci.com/gleivas/address-core)
 # address-core
-The project consist in an endpoint that receives part of an address and using the
+The project consists in an endpoint that receives part of an address and using the
 [PreciselyApi](https://developer.precisely.com/) suggests possible matches.  
-The technologies used:
+The technologies used were:
 - Python
 - Terraform
 - Aws Lambda
 - Aws ApiGateway
 
-# Local Setup 
+## Local Setup 
 Install OS dependencies:  
 `apt-get install -y git make gcc curl unzip zip`  
 
@@ -26,22 +26,22 @@ unzip terraform.zip
 sudo mv terraform /usr/local/bin
 ```
 
-# Tests
+## Tests
 To run your tests:  
 `make test`  
 
 To run the style guide checker:  
 `make code-convention`
 
-# Infrastructure
+## Infrastructure
 The infrastructure was created with Terraform, to deploy the application you need to do the following commands:  
 to initialize:   
 `terraform init`  
 
-to create a new workspace:  
+To create a new workspace:  
 `terraform workspace new dev`  
 
-or if you already have the workspace created you can select it:  
+Or if you already have the workspace created you can select it:  
 `terraform workspace select dev`  
 
 Finally, to deploy:   
@@ -50,7 +50,7 @@ Finally, to deploy:
 You can also run an infrastructure test:  
 `terraform plan`
 
-# Call the API
+## Call the API
 In the root of the project there is a script to call the api,
 in order to use it you need to first export your api key:  
 `export api_key=YOUR_API_KEY_VALUE`  
